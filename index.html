@@ -16,42 +16,91 @@
         }
         h2 {
             color: #333;
+            font-size: 1.5em;
+            text-align: center;
         }
         .show-info {
             background-color: #fff;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
         iframe {
             width: 100%;
-            height: 300px;
+            height: 56.25vw; /* 16:9 aspect ratio */
+            max-height: 300px;
             border: none;
             border-radius: 8px;
+        }
+        p, h3 {
+            font-size: 1em;
+            color: #666;
+            text-align: center;
+        }
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>The Rookie</h2>
+        <iframe src="https://vidsrc.xyz/embed/tv/tt7587890" referrerpolicy="origin" allowfullscreen sandbox="allow-scripts allow-same-origin"></iframe>
         <div class="show-info" id="info-tt7587890">
+              <a href="https://discord.gg/ayfpvYf2" class="button">Discord</a>
+    <a href="https://www.tiktok.com/@movieclicktro" class="button">TikTok</a>
+            <img id="poster-tt7587890" alt="Movie Poster">
+            <h3 id="title-tt7587890"></h3>
+            <p id="plot-tt7587890"></p>
+            <p id="release-tt7587890"></p>
+            <p id="runtime-tt7587890"></p>
+            <p id="rating-tt7587890"></p>
             <p id="actors-tt7587890"></p>
-            <iframe src="https://vidsrc.xyz/embed/tv/tt7587890" referrerpolicy="origin" allowfullscreen sandbox="allow-scripts allow-same-origin"></iframe>
-        </div>
+          </div>
     </div>
     <script>
         const tmdbApiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlN2M1NTllNTNmZDRiZWE5ZjUyNDllYTk3ZTM5NDEyMyIsIm5iZiI6MTcyNDk4MjM3Mi40OTgyNTUsInN1YiI6IjY2NTdmOWRjMjAwNGJiMTk0ZjJkMWI3NSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UsR5cprapo7ojqB3jlEUeJvuWLC1vTeApopk6Wj_aD8';
         const omdbApiKey = '81d16daf';
 
-        // Fetch and display actors' information
-        async function fetchActors() {
-            const response = await fetch(`https://api.themoviedb.org/3/tv/tt7587890/credits?api_key=${tmdbApiKey}`);
-            const data = await response.json();
-            const actors = data.cast.map(actor => actor.name).join(', ');
+        async function fetchMovieDetails() {
+            const omdbResponse = await fetch(`https://www.omdbapi.com/?i=tt7587890&apikey=${omdbApiKey}`);
+            const omdbData = await omdbResponse.json();
+            document.getElementById('title-tt7587890').innerText = omdbData.Title;
+            document.getElementById('plot-tt7587890').innerText = `Plot: ${omdbData.Plot}`;
+            document.getElementById('release-tt7587890').innerText = `Release Date: ${omdbData.Released}`;
+            document.getElementById('runtime-tt7587890').innerText = `Runtime: ${omdbData.Runtime}`;
+            document.getElementById('rating-tt7587890').innerText = `IMDb Rating: ${omdbData.imdbRating}`;
+            document.getElementById('poster-tt7587890').src = omdbData.Poster;
+
+            const tmdbResponse = await fetch(`https://api.themoviedb.org/3/tv/tt7587890/credits?api_key=${tmdbApiKey}`);
+            const tmdbData = await tmdbResponse.json();
+            const actors = tmdbData.cast.map(actor => actor.name).join(', ');
             document.getElementById('actors-tt7587890').innerText = `Actors: ${actors}`;
         }
 
-        fetchActors();
+        fetchMovieDetails();
     </script>
 </body>
 </html>
